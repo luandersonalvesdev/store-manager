@@ -1,0 +1,66 @@
+const chai = require('chai');
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const { productsController } = require('../../../src/controllers');
+const { productsService } = require('../../../src/services');
+const { getAllSuccessful, getByIdSuccessful, getByIdNotFound } = require('../../mocks/products.mock');
+
+chai.use(sinonChai);
+const { expect } = chai;
+
+describe('Controller from /products', function () {
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  it('Show all products', async function () {
+    sinon.stub(productsService, 'getAll').resolves(getAllSuccessful);
+
+    const req = {};
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    const data = [...getAllSuccessful.data];
+
+    await productsController.getAll(req, res);
+
+    expect(res.status).to.have.been.calledWith(200);
+    expect(res.json).to.have.been.calledWith(data);
+  });
+
+  it('Show product by id', async function () {
+    sinon.stub(productsService, 'getById').resolves(getByIdSuccessful);
+
+    const req = {
+      params: { id: 1 },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    const data = { ...getByIdSuccessful.data };
+    await productsController.getById(req, res);
+
+    expect(res.status).to.have.been.calledWith(200);
+    expect(res.json).to.have.been.calledWith(data);
+  });
+
+  it('Not found product by id', async function () {
+    sinon.stub(productsService, 'getById').resolves(getByIdNotFound);
+
+    const req = {
+      params: { id: 0 },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    const { data } = getByIdNotFound;
+    await productsController.getById(req, res);
+
+    expect(res.status).to.have.been.calledWith(404);
+    expect(res.json).to.have.been.calledWith(data);
+  });
+});
