@@ -1,9 +1,6 @@
 const { productsModel } = require('../models');
 const productSchema = require('./validations/productInput');
-
-const SUCCESSFUL = 'SUCCESSFUL';
-const NOT_FOUND = 'NOT_FOUND';
-const CREATED = 'CREATED';
+const { SUCCESSFUL, NOT_FOUND, CREATED } = require('../utils/namesStatusHttp');
 
 const getAll = async () => {
   const data = await productsModel.getAll();
