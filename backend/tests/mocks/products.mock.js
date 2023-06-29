@@ -42,6 +42,12 @@ const newProduct = {
   name: 'ProdutoX',
 };
 
+const newProductWithoutName = {};
+
+const newProductWithoutNameError = {
+  message: '"name" is required',
+};
+
 const newProductCreated = {
   status: 'CREATED',
   data: newProductRegistered,
@@ -56,4 +62,6 @@ module.exports = {
   newProductRegistered,
   newProduct,
   newProductCreated,
+  newProductWithoutName,
+  newProductWithoutNameError,
 };

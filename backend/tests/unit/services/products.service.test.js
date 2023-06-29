@@ -2,7 +2,9 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { productsService } = require('../../../src/services');
 const { productsModel } = require('../../../src/models');
-const { allProductsFromDB, productByIdFromDB, newProductRegistered, newProduct } = require('../../mocks/products.mock');
+const {
+  allProductsFromDB, productByIdFromDB, newProductRegistered, newProduct, newProductWithoutName,
+  newProductWithoutNameError } = require('../../mocks/products.mock');
 
 describe('Service from /products', function () {
   afterEach(function () {
@@ -12,8 +14,9 @@ describe('Service from /products', function () {
   const SUCCESSFUL = 'SUCCESSFUL';
   const CREATED = 'CREATED';
   const NOT_FOUND = 'NOT_FOUND';
+  const BAD_REQUEST = 'BAD_REQUEST';
 
-  it('Get all products', async function () {
+  it('GET all products', async function () {
     sinon.stub(productsModel, 'getAll').resolves(allProductsFromDB);
 
     const data = allProductsFromDB;
@@ -23,7 +26,7 @@ describe('Service from /products', function () {
     expect(result.data).to.be.equal(data);
   });
 
-  it('Get product by id', async function () {
+  it('GET product by id', async function () {
     sinon.stub(productsModel, 'getById').resolves(productByIdFromDB);
 
     const idProduct = 1;
@@ -34,7 +37,7 @@ describe('Service from /products', function () {
     expect(result.data).to.be.deep.equal(data);
   });
 
-  it('Insert a new product', async function () {
+  it('INSERT a new product', async function () {
     sinon.stub(productsModel, 'insert').resolves(newProductRegistered);
 
     const data = { ...newProductRegistered };
@@ -42,6 +45,15 @@ describe('Service from /products', function () {
 
     expect(result.status).to.be.equal(CREATED);
     expect(result.data).to.be.deep.equal(data);
+  });
+
+  it('INSERT a new product without name', async function () {
+    sinon.stub(productsModel, 'insert').resolves(newProductWithoutName);
+
+    const result = await productsService.insert(newProductWithoutName);
+
+    expect(result.status).to.be.equal(BAD_REQUEST);
+    expect(result.data).to.be.deep.equal(newProductWithoutNameError);
   });
 
   it('Not found product by id', async function () {
