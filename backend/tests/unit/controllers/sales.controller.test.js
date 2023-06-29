@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const { salesController } = require('../../../src/controllers');
 const { salesService } = require('../../../src/services');
-const { getAllSuccessful, getByIdSuccessful, getByIdNotFound } = require('../../mocks/sales.mock');
+const { getAllSuccessful, newSaleCreated, getByIdSuccessful, getByIdNotFound, newSale } = require('../../mocks/sales.mock');
 
 chai.use(sinonChai);
 const { expect } = chai;
@@ -13,7 +13,7 @@ describe('Controller from /sales', function () {
     sinon.restore();
   });
 
-  it('Show all sales', async function () {
+  it('SHOW all sales', async function () {
     sinon.stub(salesService, 'getAll').resolves(getAllSuccessful);
 
     const req = {};
@@ -30,7 +30,7 @@ describe('Controller from /sales', function () {
     expect(res.json).to.have.been.calledWith(data);
   });
 
-  it('Show sales by id', async function () {
+  it('SHOW sales by id', async function () {
     sinon.stub(salesService, 'getById').resolves(getByIdSuccessful);
 
     const req = {
@@ -47,7 +47,24 @@ describe('Controller from /sales', function () {
     expect(res.json).to.have.been.calledWith(data);
   });
 
-  it('Not found sales by id', async function () {
+  it('INSERT a new sale', async function () {
+    sinon.stub(salesService, 'insert').resolves(newSaleCreated);
+
+    const req = {
+      body: newSale,
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    const data = { ...newSaleCreated.data };
+    await salesController.insert(req, res);
+
+    expect(res.status).to.have.been.calledWith(201);
+    expect(res.json).to.have.been.calledWith(data);
+  });
+
+  it('NOT FOUND sales by id', async function () {
     sinon.stub(salesService, 'getById').resolves(getByIdNotFound);
 
     const req = {

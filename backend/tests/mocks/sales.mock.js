@@ -31,6 +31,23 @@ const salesByIdFromDB = [
   },
 ];
 
+const newSale = [
+  {
+    productId: 1,
+    quantity: 1,
+  },
+];
+
+const newSaleSuccessful = {
+  id: 4,
+  itemsSold: newSale,
+};
+
+const newSaleCreated = {
+  status: 'CREATED',
+  data: newSaleSuccessful,
+};
+
 const getAllSuccessful = {
   status: 'SUCCESSFUL',
   data: allSalesFromDB,
@@ -52,4 +69,7 @@ module.exports = {
   getAllSuccessful,
   getByIdSuccessful,
   getByIdNotFound,
+  newSale,
+  newSaleSuccessful,
+  newSaleCreated,
 };
