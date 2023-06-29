@@ -42,6 +42,11 @@ const newProduct = {
   name: 'ProdutoX',
 };
 
+const newProductCreated = {
+  status: 'CREATED',
+  data: newProductRegistered,
+};
+
 module.exports = {
   allProductsFromDB,
   productByIdFromDB,
@@ -50,4 +55,5 @@ module.exports = {
   getByIdNotFound,
   newProductRegistered,
   newProduct,
+  newProductCreated,
 };
