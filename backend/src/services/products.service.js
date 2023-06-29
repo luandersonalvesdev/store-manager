@@ -1,4 +1,5 @@
 const { productsModel } = require('../models');
+const productSchema = require('./validations/productInput');
 
 const SUCCESSFUL = 'SUCCESSFUL';
 const NOT_FOUND = 'NOT_FOUND';
@@ -16,6 +17,11 @@ const getById = async (idProduct) => {
 };
 
 const insert = async (product) => {
+  const { error } = productSchema.validate(product);
+  if (error) {
+    const [status, message] = error.message.split('|');
+    return { status, data: { message } };
+  }
   const data = await productsModel.insert(product);
   return { status: CREATED, data };
 };
