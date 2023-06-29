@@ -13,7 +13,7 @@ describe('Controller from /sales', function () {
     sinon.restore();
   });
 
-  it('Show all products', async function () {
+  it('Show all sales', async function () {
     sinon.stub(salesService, 'getAll').resolves(getAllSuccessful);
 
     const req = {};
@@ -30,7 +30,7 @@ describe('Controller from /sales', function () {
     expect(res.json).to.have.been.calledWith(data);
   });
 
-  it('Show product by id', async function () {
+  it('Show sales by id', async function () {
     sinon.stub(salesService, 'getById').resolves(getByIdSuccessful);
 
     const req = {
@@ -47,7 +47,7 @@ describe('Controller from /sales', function () {
     expect(res.json).to.have.been.calledWith(data);
   });
 
-  it('Not found product by id', async function () {
+  it('Not found sales by id', async function () {
     sinon.stub(salesService, 'getById').resolves(getByIdNotFound);
 
     const req = {

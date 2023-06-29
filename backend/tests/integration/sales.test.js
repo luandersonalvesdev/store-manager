@@ -11,12 +11,12 @@ chai.use(chaiHttp);
 chai.use(sinonChai);
 const { expect } = chai;
 
-describe('Route /products', function () {
+describe('Route /sales', function () {
   afterEach(function () {
     sinon.restore();
   });
 
-  it('If show all products', async function () {
+  it('If show all sales', async function () {
     sinon.stub(connection, 'execute').resolves([allSalesFromDB]);
     const res = await chai.request(app).get('/sales');
 

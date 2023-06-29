@@ -33,10 +33,21 @@ const getByIdNotFound = {
   data: { message: 'Product not found' },
 };
 
+const newProductRegistered = {
+  id: 4,
+  name: 'ProdutoX',
+};
+
+const newProduct = {
+  name: 'ProdutoX',
+};
+
 module.exports = {
   allProductsFromDB,
   productByIdFromDB,
   getAllSuccessful,
   getByIdSuccessful,
   getByIdNotFound,
+  newProductRegistered,
+  newProduct,
 };

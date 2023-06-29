@@ -12,7 +12,7 @@ describe('Service from /sales', function () {
   const SUCCESSFUL = 'SUCCESSFUL';
   const NOT_FOUND = 'NOT_FOUND';
 
-  it('Get all products', async function () {
+  it('Get all sales', async function () {
     sinon.stub(salesModel, 'getAll').resolves(allSalesFromDB);
 
     const data = allSalesFromDB;
@@ -22,7 +22,7 @@ describe('Service from /sales', function () {
     expect(result.data).to.be.equal(data);
   });
 
-  it('Get product by id', async function () {
+  it('Get sales by id', async function () {
     sinon.stub(salesModel, 'getById').resolves(salesByIdFromDB);
 
     const idProduct = 1;
@@ -33,7 +33,7 @@ describe('Service from /sales', function () {
     expect(result.data).to.be.deep.equal(data);
   });
 
-  it('Not found product by id', async function () {
+  it('Not found sales by id', async function () {
     sinon.stub(salesModel, 'getById').resolves([]);
 
     const idProduct = 0;

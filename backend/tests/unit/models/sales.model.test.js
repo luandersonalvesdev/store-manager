@@ -17,7 +17,7 @@ describe('Model from /sales', function () {
     expect(result).to.be.deep.equal(data);
   });
 
-  it('Get products by id', async function () {
+  it('Get sales by id', async function () {
     sinon.stub(connection, 'execute').resolves([salesByIdFromDB]);
 
     const idProduct = 1;
