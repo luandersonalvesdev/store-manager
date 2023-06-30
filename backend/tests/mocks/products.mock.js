@@ -18,9 +18,25 @@ const productByIdFromDB = {
   name: 'Martelo de Thor',
 };
 
+const productsByNameFromDB = [
+  {
+    id: 1,
+    name: 'Martelo de Thor',
+  },
+  {
+    id: 2,
+    name: 'Traje de encolhimento',
+  },
+];
+
 const getAllSuccessful = {
   status: 'SUCCESSFUL',
   data: allProductsFromDB,
+};
+
+const getByNameSuccessful = {
+  status: 'SUCCESSFUL',
+  data: productsByNameFromDB,
 };
 
 const getByIdSuccessful = {
@@ -82,4 +98,6 @@ module.exports = {
   updatedProduct,
   productUpdatedSuccessful,
   deletedProduct,
+  getByNameSuccessful,
+  productsByNameFromDB,
 };

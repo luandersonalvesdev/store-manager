@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { productsModel } = require('../../../src/models');
-const { allProductsFromDB, productByIdFromDB, newProduct, newProductRegistered } = require('../../mocks/products.mock');
+const { allProductsFromDB, productByIdFromDB, newProduct, newProductRegistered, productsByNameFromDB } = require('../../mocks/products.mock');
 const connection = require('../../../src/models/connection');
 
 describe('Model from /products', function () {
@@ -41,6 +41,16 @@ describe('Model from /products', function () {
     const result = await productsModel.update(1, newProduct);
 
     expect(result).to.be.equal(undefined);
+  });
+
+  it('GET product by name', async function () {
+    sinon.stub(connection, 'execute').resolves([productsByNameFromDB]);
+
+    const result = await productsModel.getByName('T');
+
+    const data = productsByNameFromDB;
+
+    expect(result).to.be.equal(data);
   });
 
   it('DELETE a product', async function () {

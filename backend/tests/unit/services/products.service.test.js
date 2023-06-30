@@ -4,7 +4,7 @@ const { productsService } = require('../../../src/services');
 const { productsModel } = require('../../../src/models');
 const {
   allProductsFromDB, productByIdFromDB, newProductRegistered, deletedProduct,
-  newProduct, newProductWithoutName, newProductWithoutNameError, updatedProduct, getByIdNotFound,
+  newProduct, newProductWithoutName, newProductWithoutNameError, updatedProduct, getByIdNotFound, productsByNameFromDB,
 } = require('../../mocks/products.mock');
 
 describe('Service from /products', function () {
@@ -33,6 +33,17 @@ describe('Service from /products', function () {
     const idProduct = 1;
     const data = { ...productByIdFromDB };
     const result = await productsService.getById(idProduct);
+
+    expect(result.status).to.be.equal(SUCCESSFUL);
+    expect(result.data).to.be.deep.equal(data);
+  });
+
+  it('GET product by name', async function () {
+    sinon.stub(productsModel, 'getByName').resolves(productsByNameFromDB);
+
+    const nameProduct = 'T';
+    const data = [...productsByNameFromDB];
+    const result = await productsService.getByName(nameProduct);
 
     expect(result.status).to.be.equal(SUCCESSFUL);
     expect(result.data).to.be.deep.equal(data);
