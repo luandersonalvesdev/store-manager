@@ -69,6 +69,11 @@ const getByIdNotFound = {
   data: { message: 'Sale not found' },
 };
 
+const deletedSale = {
+  status: 'NO_CONTENT',
+  data: {},
+};
+
 module.exports = {
   allSalesFromDB,
   salesByIdFromDB,
@@ -79,4 +84,5 @@ module.exports = {
   newSaleSuccessful,
   newSaleCreated,
   newSaleWithoutProductId,
+  deletedSale,
 };

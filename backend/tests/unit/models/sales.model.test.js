@@ -37,4 +37,15 @@ describe('Model from /sales', function () {
     const result = await salesModel.insert(newSale);
     expect(result).to.be.deep.equal(newSaleSuccessful);
   });
+
+  it('DELETE a sale', async function () {
+    sinon.stub(connection, 'execute')
+      .onFirstCall()
+      .resolves(undefined)
+      .onSecondCall()
+      .resolves(undefined);
+
+    const result = await salesModel.remove('1');
+    expect(result).to.be.deep.equal(undefined);
+  });
 });

@@ -2,8 +2,9 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { salesService } = require('../../../src/services');
 const { salesModel, productsModel } = require('../../../src/models');
-const { allSalesFromDB, salesByIdFromDB, newSale, newSaleSuccessful, newSaleWithoutProductId } = require('../../mocks/sales.mock');
+const { allSalesFromDB, salesByIdFromDB, newSale, newSaleSuccessful, newSaleWithoutProductId, getByIdNotFound } = require('../../mocks/sales.mock');
 const { allProductsFromDB } = require('../../mocks/products.mock');
+const { NO_CONTENT } = require('../../../src/utils/namesStatusHttp');
 
 describe('Service from /sales', function () {
   afterEach(function () {
@@ -72,6 +73,26 @@ describe('Service from /sales', function () {
 
     expect(result.status).to.be.equal(BAD_REQUEST);
     expect(result.data).to.be.deep.equal({ message: '"productId" is required' });
+  });
+
+  it('DELETE a sale', async function () {
+    sinon.stub(salesModel, 'remove').resolves(undefined);
+    sinon.stub(salesModel, 'getById').resolves(salesByIdFromDB);
+
+    const result = await salesService.remove('1');
+
+    expect(result.status).to.be.equal(NO_CONTENT);
+    expect(result.data).to.be.deep.equal({});
+  });
+
+  it('DELETE a sale that does exist', async function () {
+    sinon.stub(salesModel, 'remove').resolves(undefined);
+    sinon.stub(salesModel, 'getById').resolves([]);
+
+    const result = await salesService.remove('0');
+
+    expect(result.status).to.be.equal(getByIdNotFound.status);
+    expect(result.data).to.be.deep.equal(getByIdNotFound.data);
   });
 
   it('NOT FOUND sales by id', async function () {

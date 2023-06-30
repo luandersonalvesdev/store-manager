@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const { salesController } = require('../../../src/controllers');
 const { salesService } = require('../../../src/services');
-const { getAllSuccessful, newSaleCreated, getByIdSuccessful, getByIdNotFound, newSale } = require('../../mocks/sales.mock');
+const { getAllSuccessful, newSaleCreated, getByIdSuccessful, getByIdNotFound, newSale, deletedSale } = require('../../mocks/sales.mock');
 
 chai.use(sinonChai);
 const { expect } = chai;
@@ -62,6 +62,23 @@ describe('Controller from /sales', function () {
 
     expect(res.status).to.have.been.calledWith(201);
     expect(res.json).to.have.been.calledWith(data);
+  });
+
+  it('DELETE a sale', async function () {
+    sinon.stub(salesService, 'remove').resolves(deletedSale);
+
+    const req = {
+      params: '1',
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await salesController.remove(req, res);
+
+    expect(res.status).to.have.been.calledWith(204);
+    expect(res.json).to.have.been.calledWith({});
   });
 
   it('NOT FOUND sales by id', async function () {
