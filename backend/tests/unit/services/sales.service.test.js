@@ -1,8 +1,9 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { salesService } = require('../../../src/services');
-const { salesModel } = require('../../../src/models');
-const { allSalesFromDB, salesByIdFromDB, newSale, newSaleSuccessful } = require('../../mocks/sales.mock');
+const { salesModel, productsModel } = require('../../../src/models');
+const { allSalesFromDB, salesByIdFromDB, newSale, newSaleSuccessful, newSaleWithoutProductId } = require('../../mocks/sales.mock');
+const { allProductsFromDB } = require('../../mocks/products.mock');
 
 describe('Service from /sales', function () {
   afterEach(function () {
@@ -12,6 +13,7 @@ describe('Service from /sales', function () {
   const SUCCESSFUL = 'SUCCESSFUL';
   const CREATED = 'CREATED';
   const NOT_FOUND = 'NOT_FOUND';
+  const BAD_REQUEST = 'BAD_REQUEST';
 
   it('GET all sales', async function () {
     sinon.stub(salesModel, 'getAll').resolves(allSalesFromDB);
@@ -23,7 +25,7 @@ describe('Service from /sales', function () {
     expect(result.data).to.be.equal(data);
   });
 
-  it('GET sales by id', async function () {
+  it('GET sale by id', async function () {
     sinon.stub(salesModel, 'getById').resolves(salesByIdFromDB);
 
     const idProduct = 1;
@@ -34,14 +36,42 @@ describe('Service from /sales', function () {
     expect(result.data).to.be.deep.equal(data);
   });
 
-  it('INSERT sales', async function () {
+  it('INSERT sale', async function () {
     sinon.stub(salesModel, 'insert').resolves(newSaleSuccessful);
+    sinon.stub(productsModel, 'getById')
+      .onFirstCall()
+      .resolves(allProductsFromDB[0])
+      .onSecondCall()
+      .resolves(allProductsFromDB[1]);
 
     const data = { ...newSaleSuccessful };
     const result = await salesService.insert(newSale);
 
     expect(result.status).to.be.equal(CREATED);
     expect(result.data).to.be.deep.equal(data);
+  });
+
+  it('INSERT sale with invalid productId', async function () {
+    sinon.stub(salesModel, 'insert').resolves(newSaleSuccessful);
+    sinon.stub(productsModel, 'getById')
+      .onFirstCall()
+      .resolves(undefined)
+      .onSecondCall()
+      .resolves(allProductsFromDB[1]);
+
+    const result = await salesService.insert(newSale);
+
+    expect(result.status).to.be.equal(NOT_FOUND);
+    expect(result.data).to.be.deep.equal({ message: 'Product not found' });
+  });
+
+  it('INSERT sale without productId', async function () {
+    sinon.stub(salesModel, 'insert').resolves(newSaleSuccessful);
+
+    const result = await salesService.insert(newSaleWithoutProductId);
+
+    expect(result.status).to.be.equal(BAD_REQUEST);
+    expect(result.data).to.be.deep.equal({ message: '"productId" is required' });
   });
 
   it('NOT FOUND sales by id', async function () {

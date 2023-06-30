@@ -38,6 +38,12 @@ const newSale = [
   },
 ];
 
+const newSaleWithoutProductId = [
+  {
+    quantity: 1,
+  },
+];
+
 const newSaleSuccessful = {
   id: 4,
   itemsSold: newSale,
@@ -72,4 +78,5 @@ module.exports = {
   newSale,
   newSaleSuccessful,
   newSaleCreated,
+  newSaleWithoutProductId,
 };
