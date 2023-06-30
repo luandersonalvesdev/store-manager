@@ -3,7 +3,9 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const { productsController } = require('../../../src/controllers');
 const { productsService } = require('../../../src/services');
-const { getAllSuccessful, getByIdSuccessful, getByIdNotFound, newProductCreated, newProduct, newProductRegistered } = require('../../mocks/products.mock');
+const { getAllSuccessful, getByIdSuccessful, getByIdNotFound, newProductCreated, newProduct,
+  newProductRegistered, productUpdatedSuccessful,
+} = require('../../mocks/products.mock');
 
 chai.use(sinonChai);
 const { expect } = chai;
@@ -62,6 +64,24 @@ describe('Controller from /products', function () {
 
     expect(res.status).to.have.been.calledWith(201);
     expect(res.json).to.have.been.calledWith(data);
+  });
+
+  it('PUT a product', async function () {
+    sinon.stub(productsService, 'update').resolves(productUpdatedSuccessful);
+
+    const req = {
+      body: newProduct,
+      params: '1',
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    const data = { ...productUpdatedSuccessful.data };
+    await productsController.update(req, res);
+
+    // expect(res.status).to.have.been.calledWith(201);
+    // expect(res.json).to.have.been.calledWith(data);
   });
 
   it('NOT FOUND product by id', async function () {

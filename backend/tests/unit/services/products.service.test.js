@@ -3,8 +3,9 @@ const sinon = require('sinon');
 const { productsService } = require('../../../src/services');
 const { productsModel } = require('../../../src/models');
 const {
-  allProductsFromDB, productByIdFromDB, newProductRegistered, newProduct, newProductWithoutName,
-  newProductWithoutNameError } = require('../../mocks/products.mock');
+  allProductsFromDB, productByIdFromDB, newProductRegistered,
+  newProduct, newProductWithoutName, newProductWithoutNameError, updatedProduct,
+} = require('../../mocks/products.mock');
 
 describe('Service from /products', function () {
   afterEach(function () {
@@ -56,7 +57,36 @@ describe('Service from /products', function () {
     expect(result.data).to.be.deep.equal(newProductWithoutNameError);
   });
 
-  it('Not found product by id', async function () {
+  it('PUT a product', async function () {
+    sinon.stub(productsModel, 'update').resolves(undefined);
+    sinon.stub(productsModel, 'getById').resolves(productByIdFromDB);
+
+    const result = await productsService.update('1', newProduct);
+
+    expect(result.status).to.be.equal(SUCCESSFUL);
+    expect(result.data).to.be.deep.equal(updatedProduct);
+  });
+
+  it('PUT a product without name', async function () {
+    sinon.stub(productsModel, 'update').resolves(undefined);
+
+    const result = await productsService.update('1', newProductWithoutName);
+
+    expect(result.status).to.be.equal(BAD_REQUEST);
+    expect(result.data).to.be.deep.equal({ message: '"name" is required' });
+  });
+
+  it('PUT a product that does not exist', async function () {
+    sinon.stub(productsModel, 'update').resolves(undefined);
+    sinon.stub(productsModel, 'getById').resolves(undefined);
+
+    const result = await productsService.update('0', newProduct);
+
+    expect(result.status).to.be.equal(NOT_FOUND);
+    expect(result.data).to.be.deep.equal({ message: 'Product not found' });
+  });
+
+  it('NOT FOUND product by id', async function () {
     sinon.stub(productsModel, 'getById').resolves(undefined);
 
     const idProduct = 0;

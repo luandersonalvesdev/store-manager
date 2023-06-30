@@ -38,6 +38,11 @@ const newProductRegistered = {
   name: 'ProdutoX',
 };
 
+const updatedProduct = {
+  id: 1,
+  name: 'ProdutoX',
+};
+
 const newProduct = {
   name: 'ProdutoX',
 };
@@ -53,6 +58,11 @@ const newProductCreated = {
   data: newProductRegistered,
 };
 
+const productUpdatedSuccessful = {
+  status: 'SUCCESSFUL',
+  data: updatedProduct,
+};
+
 module.exports = {
   allProductsFromDB,
   productByIdFromDB,
@@ -64,4 +74,6 @@ module.exports = {
   newProductCreated,
   newProductWithoutName,
   newProductWithoutNameError,
+  updatedProduct,
+  productUpdatedSuccessful,
 };

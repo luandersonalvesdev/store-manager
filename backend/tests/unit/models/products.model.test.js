@@ -9,7 +9,7 @@ describe('Model from /products', function () {
     sinon.restore();
   });
 
-  it('Get all products', async function () {
+  it('GET all products', async function () {
     sinon.stub(connection, 'execute').resolves([allProductsFromDB]);
 
     const data = [...allProductsFromDB];
@@ -17,7 +17,7 @@ describe('Model from /products', function () {
     expect(result).to.be.deep.equal(data);
   });
 
-  it('Get products by id', async function () {
+  it('GET products by id', async function () {
     sinon.stub(connection, 'execute').resolves([[productByIdFromDB]]);
 
     const idProduct = 1;
@@ -27,11 +27,19 @@ describe('Model from /products', function () {
     expect(result).to.be.deep.equal(data);
   });
 
-  it('Insert a new products', async function () {
+  it('INSERT a new products', async function () {
     sinon.stub(connection, 'execute').resolves([{ insertId: 4 }]);
 
     const result = await productsModel.insert(newProduct);
 
     expect(result).to.be.deep.equal(newProductRegistered);
+  });
+
+  it('PUT a new product', async function () {
+    sinon.stub(connection, 'execute').resolves(undefined);
+
+    const result = await productsModel.update(1, newProduct);
+
+    expect(result).to.be.equal(undefined);
   });
 });
