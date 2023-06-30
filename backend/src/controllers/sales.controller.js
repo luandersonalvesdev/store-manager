@@ -18,8 +18,15 @@ const insert = async (req, res) => {
   return res.status(mapStatus(status)).json(data);
 };
 
+const remove = async (req, res) => {
+  const { id } = req.params;
+  const { status, data } = await salesService.remove(id);
+  return res.status(mapStatus(status)).json(data);
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
+  remove,
 };

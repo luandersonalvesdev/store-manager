@@ -1,5 +1,5 @@
 const { salesModel, productsModel } = require('../models');
-const { SUCCESSFUL, NOT_FOUND, CREATED } = require('../utils/namesStatusHttp');
+const { SUCCESSFUL, NOT_FOUND, CREATED, NO_CONTENT } = require('../utils/namesStatusHttp');
 const saleSchema = require('./validations/saleInput');
 
 const getAll = async () => {
@@ -31,8 +31,16 @@ const insert = async (sale) => {
   return { status: CREATED, data };
 };
 
+const remove = async (id) => {
+  const sale = await salesModel.getById(id);
+  if (!sale.length) return { status: NOT_FOUND, data: { message: 'Sale not found' } };
+  await salesModel.remove(id);
+  return { status: NO_CONTENT, data: {} };
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
+  remove,
 };
