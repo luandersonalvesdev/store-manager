@@ -2,8 +2,8 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { salesService } = require('../../../src/services');
 const { salesModel, productsModel } = require('../../../src/models');
-const { allSalesFromDB, salesByIdFromDB, newSale, newSaleSuccessful, newSaleWithoutProductId, getByIdNotFound } = require('../../mocks/sales.mock');
-const { allProductsFromDB } = require('../../mocks/products.mock');
+const { allSalesFromDB, salesByIdFromDB, newSale, newSaleSuccessful, newSaleWithoutProductId, getByIdNotFound, updateQuantityInSaleSuccessful, updateQuantityInSaleWithoutQuantity, updateQuantitySaleNotFound, updateQuantityProductNotFound } = require('../../mocks/sales.mock');
+const { allProductsFromDB, productByIdFromDB } = require('../../mocks/products.mock');
 const { NO_CONTENT } = require('../../../src/utils/namesStatusHttp');
 
 describe('Service from /sales', function () {
@@ -93,6 +93,43 @@ describe('Service from /sales', function () {
 
     expect(result.status).to.be.equal(getByIdNotFound.status);
     expect(result.data).to.be.deep.equal(getByIdNotFound.data);
+  });
+
+  it('PUT a product quantity in sale', async function () {
+    sinon.stub(salesModel, 'getById').resolves(salesByIdFromDB);
+    sinon.stub(productsModel, 'getById').resolves(productByIdFromDB);
+    sinon.stub(salesModel, 'updateQuantity').resolves(undefined);
+
+    const result = await salesService.updateQuantity('1', '1', '100');
+
+    expect(result.status).to.be.equal(updateQuantityInSaleSuccessful.status);
+    expect(result.data).to.be.deep.equal(updateQuantityInSaleSuccessful.data);
+  });
+
+  it('PUT a product quantity in sale without quantity in req', async function () {
+    const result = await salesService.updateQuantity('1', '1');
+
+    expect(result.status).to.be.equal(updateQuantityInSaleWithoutQuantity.status);
+    expect(result.data).to.be.deep.equal(updateQuantityInSaleWithoutQuantity.data);
+  });
+
+  it('PUT a product quantity that sale does exists', async function () {
+    sinon.stub(salesModel, 'getById').resolves([]);
+
+    const result = await salesService.updateQuantity('0', '1', '100');
+
+    expect(result.status).to.be.equal(updateQuantitySaleNotFound.status);
+    expect(result.data).to.be.deep.equal(updateQuantitySaleNotFound.data);
+  });
+
+  it('PUT a product quantity that product does exists', async function () {
+    sinon.stub(salesModel, 'getById').resolves(salesByIdFromDB);
+    sinon.stub(productsModel, 'getById').resolves(undefined);
+
+    const result = await salesService.updateQuantity('1', '0', '100');
+
+    expect(result.status).to.be.equal(updateQuantityProductNotFound.status);
+    expect(result.data).to.be.deep.equal(updateQuantityProductNotFound.data);
   });
 
   it('NOT FOUND sales by id', async function () {

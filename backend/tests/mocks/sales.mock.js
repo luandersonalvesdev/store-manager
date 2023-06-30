@@ -1,4 +1,4 @@
-const date = '2023-06-28T23:59:10.000Z';
+const date = '2023-06-30T03:00:00.000Z';
 
 const allSalesFromDB = [
   {
@@ -54,6 +54,33 @@ const newSaleCreated = {
   data: newSaleSuccessful,
 };
 
+const updateQuantityInSale = {
+  date,
+  productId: 1,
+  quantity: '100',
+  saleId: 1,
+};
+
+const updateQuantityInSaleSuccessful = {
+  status: 'SUCCESSFUL',
+  data: updateQuantityInSale,
+};
+
+const updateQuantityInSaleWithoutQuantity = {
+  status: 'BAD_REQUEST',
+  data: { message: '"quantity" is required' },
+};
+
+const updateQuantitySaleNotFound = {
+  status: 'NOT_FOUND',
+  data: { message: 'Sale not found' },
+};
+
+const updateQuantityProductNotFound = {
+  status: 'NOT_FOUND',
+  data: { message: 'Product not found in sale' },
+};
+
 const getAllSuccessful = {
   status: 'SUCCESSFUL',
   data: allSalesFromDB,
@@ -85,4 +112,9 @@ module.exports = {
   newSaleCreated,
   newSaleWithoutProductId,
   deletedSale,
+  updateQuantityInSaleSuccessful,
+  updateQuantityInSale,
+  updateQuantityInSaleWithoutQuantity,
+  updateQuantitySaleNotFound,
+  updateQuantityProductNotFound,
 };

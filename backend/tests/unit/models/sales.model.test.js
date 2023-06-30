@@ -48,4 +48,11 @@ describe('Model from /sales', function () {
     const result = await salesModel.remove('1');
     expect(result).to.be.deep.equal(undefined);
   });
+
+  it('PUT a product quantity in sale', async function () {
+    sinon.stub(connection, 'execute').resolves(undefined);
+
+    const result = await salesModel.updateQuantity('1', '1', '100');
+    expect(result).to.be.deep.equal(undefined);
+  });
 });

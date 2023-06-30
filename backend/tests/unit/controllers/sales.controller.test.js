@@ -3,7 +3,9 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const { salesController } = require('../../../src/controllers');
 const { salesService } = require('../../../src/services');
-const { getAllSuccessful, newSaleCreated, getByIdSuccessful, getByIdNotFound, newSale, deletedSale } = require('../../mocks/sales.mock');
+const { getAllSuccessful, newSaleCreated, getByIdSuccessful, getByIdNotFound, newSale,
+  deletedSale, updateQuantityInSaleSuccessful,
+} = require('../../mocks/sales.mock');
 
 chai.use(sinonChai);
 const { expect } = chai;
@@ -79,6 +81,24 @@ describe('Controller from /sales', function () {
 
     expect(res.status).to.have.been.calledWith(204);
     expect(res.json).to.have.been.calledWith({});
+  });
+
+  it('PUT a product quantity in sale', async function () {
+    sinon.stub(salesService, 'updateQuantity').resolves(updateQuantityInSaleSuccessful);
+
+    const req = {
+      params: { saleId: '1', productId: '1' },
+      body: { quantity: 100 },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await salesController.updateQuantity(req, res);
+
+    expect(res.status).to.have.been.calledWith(200);
+    expect(res.json).to.have.been.calledWith(updateQuantityInSaleSuccessful.data);
   });
 
   it('NOT FOUND sales by id', async function () {
