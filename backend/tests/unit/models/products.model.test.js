@@ -42,4 +42,12 @@ describe('Model from /products', function () {
 
     expect(result).to.be.equal(undefined);
   });
+
+  it('DELETE a product', async function () {
+    sinon.stub(connection, 'execute').resolves(undefined);
+
+    const result = await productsModel.remove(1);
+
+    expect(result).to.be.equal(undefined);
+  });
 });

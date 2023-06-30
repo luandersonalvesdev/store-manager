@@ -63,6 +63,11 @@ const productUpdatedSuccessful = {
   data: updatedProduct,
 };
 
+const deletedProduct = {
+  status: 'NO_CONTENT',
+  data: {},
+};
+
 module.exports = {
   allProductsFromDB,
   productByIdFromDB,
@@ -76,4 +81,5 @@ module.exports = {
   newProductWithoutNameError,
   updatedProduct,
   productUpdatedSuccessful,
+  deletedProduct,
 };

@@ -3,8 +3,8 @@ const sinon = require('sinon');
 const { productsService } = require('../../../src/services');
 const { productsModel } = require('../../../src/models');
 const {
-  allProductsFromDB, productByIdFromDB, newProductRegistered,
-  newProduct, newProductWithoutName, newProductWithoutNameError, updatedProduct,
+  allProductsFromDB, productByIdFromDB, newProductRegistered, deletedProduct,
+  newProduct, newProductWithoutName, newProductWithoutNameError, updatedProduct, getByIdNotFound,
 } = require('../../mocks/products.mock');
 
 describe('Service from /products', function () {
@@ -84,6 +84,26 @@ describe('Service from /products', function () {
 
     expect(result.status).to.be.equal(NOT_FOUND);
     expect(result.data).to.be.deep.equal({ message: 'Product not found' });
+  });
+
+  it('DELETE a product', async function () {
+    sinon.stub(productsModel, 'remove').resolves(undefined);
+    sinon.stub(productsModel, 'getById').resolves(productByIdFromDB);
+
+    const result = await productsService.remove('1');
+
+    expect(result.status).to.be.equal(deletedProduct.status);
+    expect(result.data).to.be.deep.equal(deletedProduct.data);
+  });
+
+  it('DELETE a product that does exist', async function () {
+    sinon.stub(productsModel, 'remove').resolves(undefined);
+    sinon.stub(productsModel, 'getById').resolves(undefined);
+
+    const result = await productsService.remove('1');
+
+    expect(result.status).to.be.equal(getByIdNotFound.status);
+    expect(result.data).to.be.deep.equal(getByIdNotFound.data);
   });
 
   it('NOT FOUND product by id', async function () {

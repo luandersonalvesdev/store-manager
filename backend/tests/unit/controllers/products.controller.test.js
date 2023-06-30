@@ -4,7 +4,7 @@ const sinonChai = require('sinon-chai');
 const { productsController } = require('../../../src/controllers');
 const { productsService } = require('../../../src/services');
 const { getAllSuccessful, getByIdSuccessful, getByIdNotFound, newProductCreated, newProduct,
-  newProductRegistered, productUpdatedSuccessful,
+  newProductRegistered, productUpdatedSuccessful, deletedProduct,
 } = require('../../mocks/products.mock');
 
 chai.use(sinonChai);
@@ -80,8 +80,25 @@ describe('Controller from /products', function () {
     const data = { ...productUpdatedSuccessful.data };
     await productsController.update(req, res);
 
-    // expect(res.status).to.have.been.calledWith(201);
-    // expect(res.json).to.have.been.calledWith(data);
+    expect(res.status).to.have.been.calledWith(200);
+    expect(res.json).to.have.been.calledWith(data);
+  });
+
+  it('DELETE a product', async function () {
+    sinon.stub(productsService, 'remove').resolves(deletedProduct);
+
+    const req = {
+      params: '1',
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await productsController.remove(req, res);
+
+    expect(res.status).to.have.been.calledWith(204);
+    expect(res.json).to.have.been.calledWith(deletedProduct.data);
   });
 
   it('NOT FOUND product by id', async function () {
