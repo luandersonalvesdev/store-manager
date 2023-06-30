@@ -1,5 +1,6 @@
+const snakeize = require('snakeize');
 const connection = require('./connection');
-const { formatedColumns, formatedValues } = require('../utils/formatedInsert');
+const { formatedColumns, formatedValues, formatedUpdate } = require('../utils/formatedInsert');
 
 const getAll = async () => {
   const query = 'SELECT * FROM products ORDER BY id;';
@@ -24,8 +25,19 @@ const insert = async (product) => {
   return { id: insertId, ...product };
 };
 
+const update = async (id, newProduct) => {
+  const columnsAndValues = formatedUpdate(snakeize(newProduct));
+  const query = `
+  UPDATE products
+  SET ${columnsAndValues}
+  WHERE id = ?;
+  `;
+  await connection.execute(query, [...Object.values(newProduct), id]);
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
+  update,
 };

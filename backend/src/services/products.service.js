@@ -23,8 +23,23 @@ const insert = async (product) => {
   return { status: CREATED, data };
 };
 
+const update = async (id, newProduct) => {
+  const { error } = productSchema.validate(newProduct);
+  if (error) {
+    const [status, message] = error.message.split('|');
+    return { status, data: { message } };
+  }
+
+  const productExists = await productsModel.getById(id);
+
+  if (!productExists) return { status: NOT_FOUND, data: { message: 'Product not found' } };
+  await productsModel.update(id, newProduct);
+  return { status: SUCCESSFUL, data: { id: Number(id), ...newProduct } };
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
+  update,
 };
