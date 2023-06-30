@@ -3,6 +3,7 @@ const NOT_FOUND = 'NOT_FOUND';
 const CREATED = 'CREATED';
 const INVALID_DATA = 'INVALID_DATA';
 const BAD_REQUEST = 'BAD_REQUEST';
+const NO_CONTENT = 'NO_CONTENT';
 
 module.exports = {
   SUCCESSFUL,
@@ -10,4 +11,5 @@ module.exports = {
   CREATED,
   INVALID_DATA,
   BAD_REQUEST,
+  NO_CONTENT,
 };

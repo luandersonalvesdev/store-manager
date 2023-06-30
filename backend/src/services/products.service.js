@@ -1,6 +1,6 @@
 const { productsModel } = require('../models');
 const productSchema = require('./validations/productInput');
-const { SUCCESSFUL, NOT_FOUND, CREATED } = require('../utils/namesStatusHttp');
+const { SUCCESSFUL, NOT_FOUND, CREATED, NO_CONTENT } = require('../utils/namesStatusHttp');
 
 const getAll = async () => {
   const data = await productsModel.getAll();
@@ -37,9 +37,17 @@ const update = async (id, newProduct) => {
   return { status: SUCCESSFUL, data: { id: Number(id), ...newProduct } };
 };
 
+const remove = async (id) => {
+  const productExists = await productsModel.getById(id);
+  if (!productExists) return { status: NOT_FOUND, data: { message: 'Product not found' } };
+  await productsModel.remove(id);
+  return { status: NO_CONTENT, data: {} };
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
   update,
+  remove,
 };
