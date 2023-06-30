@@ -44,10 +44,16 @@ const remove = async (id) => {
   return { status: NO_CONTENT, data: {} };
 };
 
+const getByName = async (name) => {
+  const data = await productsModel.getByName(name);
+  return { status: SUCCESSFUL, data };
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
   update,
   remove,
+  getByName,
 };

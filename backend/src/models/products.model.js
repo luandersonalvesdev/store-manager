@@ -43,10 +43,22 @@ const remove = async (id) => {
   await connection.execute(query, [id]);
 };
 
+const getByName = async (name) => {
+  const query = `
+  SELECT * 
+  FROM products 
+  WHERE (name) 
+  LIKE CONCAT ("%", ?, "%");
+  `;
+  const [result] = await connection.execute(query, [name]);
+  return result;
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
   update,
   remove,
+  getByName,
 };

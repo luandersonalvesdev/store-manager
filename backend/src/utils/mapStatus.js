@@ -7,4 +7,4 @@ const mapStatus = {
   NO_CONTENT: 204,
 };
 
-module.exports = (status) => mapStatus[status] || 500;
+module.exports = (status) => mapStatus[status];
