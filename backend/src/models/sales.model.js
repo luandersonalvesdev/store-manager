@@ -2,6 +2,7 @@ const snakeize = require('snakeize');
 const camelizeArray = require('../utils/camelizeArray');
 const connection = require('./connection');
 const { formatedColumns, formatedValues } = require('../utils/formatedInsert');
+const snakeizeArray = require('../utils/snakeizeArray');
 
 const getAll = async () => {
   const query = `
@@ -61,9 +62,21 @@ const remove = async (id) => {
   await connection.execute(querySalesProducts, [id]);
 };
 
+const updateQuantity = async (saleId, productId, quantity) => {
+  const query = `
+  UPDATE sales_products
+  SET quantity = ?
+  WHERE sale_id = ? AND product_id = ?;
+  `;
+  const formatedIds = snakeizeArray([saleId, productId]);
+
+  await connection.execute(query, [quantity, ...formatedIds]);
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
   remove,
+  updateQuantity,
 };

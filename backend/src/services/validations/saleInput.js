@@ -10,4 +10,11 @@ const saleSchema = joi.array().items({
   'number.greater': `${INVALID_DATA}|"{#key}" must be greater than or equal to 1`,
 });
 
-module.exports = saleSchema;
+const saleUpdateQuantitySchema = joi.object({
+  quantity: joi.number().integer().greater(0).required(),
+}).messages({
+  'any.required': `${BAD_REQUEST}|"{#key}" is required`,
+  'number.greater': `${INVALID_DATA}|"{#key}" must be greater than or equal to 1`,
+});
+
+module.exports = { saleSchema, saleUpdateQuantitySchema };

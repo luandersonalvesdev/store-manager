@@ -1,6 +1,6 @@
 const { salesModel, productsModel } = require('../models');
 const { SUCCESSFUL, NOT_FOUND, CREATED, NO_CONTENT } = require('../utils/namesStatusHttp');
-const saleSchema = require('./validations/saleInput');
+const { saleSchema, saleUpdateQuantitySchema } = require('./validations/saleInput');
 
 const getAll = async () => {
   const data = await salesModel.getAll();
@@ -38,9 +38,41 @@ const remove = async (id) => {
   return { status: NO_CONTENT, data: {} };
 };
 
+const convertDateToString = () => {
+  const year = new Date().getFullYear().toString();
+  const month = new Date().getMonth().toString();
+  const day = new Date().getDate().toString();
+  return new Date(year, month, day);
+};
+
+const updateQuantity = async (saleId, productId, quantity) => {
+  const { error } = saleUpdateQuantitySchema.validate({ quantity });
+  if (error) {
+    const [status, message] = error.message.split('|');
+    return { status, data: { message } };
+  }
+
+  const saleExists = await salesModel.getById(saleId);
+  if (!saleExists.length) return { status: NOT_FOUND, data: { message: 'Sale not found' } };
+
+  const productExists = await productsModel.getById(productId);
+  if (!productExists) return { status: NOT_FOUND, data: { message: 'Product not found in sale' } };
+
+  await salesModel.updateQuantity(saleId, productId, quantity);
+  const date = convertDateToString();
+  const data = {
+    date: date.toISOString(),
+    productId: Number(productId),
+    saleId: Number(saleId),
+    quantity,
+  };
+  return { status: SUCCESSFUL, data };
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
   remove,
+  updateQuantity,
 };
