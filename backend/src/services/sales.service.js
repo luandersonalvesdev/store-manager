@@ -1,5 +1,6 @@
-const { salesModel } = require('../models');
+const { salesModel, productsModel } = require('../models');
 const { SUCCESSFUL, NOT_FOUND, CREATED } = require('../utils/namesStatusHttp');
+const saleSchema = require('./validations/saleInput');
 
 const getAll = async () => {
   const data = await salesModel.getAll();
@@ -13,6 +14,19 @@ const getById = async (idProduct) => {
 };
 
 const insert = async (sale) => {
+  const { error } = saleSchema.validate(sale);
+  if (error) {
+    const [status, message] = error.message.split('|');
+    return { status, data: { message } };
+  }
+
+  const products = sale.map((prod) => productsModel.getById(prod.productId));
+  const result = await Promise.all(products);
+
+  const productExists = result.some((res) => !res);
+
+  if (productExists) return { status: NOT_FOUND, data: { message: 'Product not found' } };
+
   const data = await salesModel.insert(sale);
   return { status: CREATED, data };
 };
