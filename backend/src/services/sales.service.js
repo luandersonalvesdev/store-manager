@@ -1,6 +1,7 @@
 const { salesModel, productsModel } = require('../models');
 const { SUCCESSFUL, NOT_FOUND, CREATED, NO_CONTENT } = require('../utils/namesStatusHttp');
 const { saleSchema, saleUpdateQuantitySchema } = require('./validations/saleInput');
+const convertDateToString = require('../utils/convertDate');
 
 const getAll = async () => {
   const data = await salesModel.getAll();
@@ -36,13 +37,6 @@ const remove = async (id) => {
   if (!sale.length) return { status: NOT_FOUND, data: { message: 'Sale not found' } };
   await salesModel.remove(id);
   return { status: NO_CONTENT, data: {} };
-};
-
-const convertDateToString = () => {
-  const year = new Date().getFullYear().toString();
-  const month = new Date().getMonth().toString();
-  const day = new Date().getDate().toString();
-  return new Date(year, month, day);
 };
 
 const updateQuantity = async (saleId, productId, quantity) => {
