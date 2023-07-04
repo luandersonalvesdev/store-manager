@@ -5,6 +5,7 @@ const { salesModel, productsModel } = require('../../../src/models');
 const { allSalesFromDB, salesByIdFromDB, newSale, newSaleSuccessful, newSaleWithoutProductId, getByIdNotFound, updateQuantityInSaleSuccessful, updateQuantityInSaleWithoutQuantity, updateQuantitySaleNotFound, updateQuantityProductNotFound } = require('../../mocks/sales.mock');
 const { allProductsFromDB, productByIdFromDB } = require('../../mocks/products.mock');
 const { NO_CONTENT } = require('../../../src/utils/namesStatusHttp');
+const convertDateToString = require('../../../src/utils/convertDate');
 
 describe('Service from /sales', function () {
   afterEach(function () {
@@ -102,8 +103,10 @@ describe('Service from /sales', function () {
 
     const result = await salesService.updateQuantity('1', '1', '100');
 
+    const date = convertDateToString().toISOString();
+
     expect(result.status).to.be.equal(updateQuantityInSaleSuccessful.status);
-    expect(result.data).to.be.deep.equal(updateQuantityInSaleSuccessful.data);
+    expect(result.data).to.be.deep.equal({ ...updateQuantityInSaleSuccessful.data, date });
   });
 
   it('PUT a product quantity in sale without quantity in req', async function () {
